@@ -1,6 +1,7 @@
 import { Ion, JulianDate } from 'cesium';
 import { Clock, Viewer } from 'resium';
 import styled from 'styled-components';
+import UamController from './UamController';
 
 const UCSViewer = styled(Viewer)`
   width: 100%;
@@ -10,8 +11,9 @@ const UCSViewer = styled(Viewer)`
   transform: translate(-50%, -50%);
 `;
 
-function App() {
+export default function App() {
   Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESSTOKEN;
+  const start = JulianDate.now();
 
   return (
     <UCSViewer
@@ -28,9 +30,8 @@ function App() {
       //creditContainer={document.createElement('div')} //
       skyBox={false}
     >
-      <Clock startTime={JulianDate.now()} shouldAnimate={true} />
+      <Clock startTime={start.clone()} shouldAnimate={true} />
+      <UamController />
     </UCSViewer>
   );
 }
-
-export default App;
