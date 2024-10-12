@@ -2,9 +2,16 @@ import { Cartesian3, Color, JulianDate, SampledPositionProperty } from 'cesium';
 import { useEffect, useRef, useState } from 'react';
 import { Entity } from 'resium';
 
-const samplePath1: number[][] = [
-  [128.6115, 35.8881, 10],
-  [128.612, 35.8904, 100],
+const samplePath: number[][][] = [
+  [
+    [128.6115, 35.8881, 10],
+    [128.612, 35.8904, 100],
+  ],
+  [
+    [128.6108, 35.8902, 50],
+    [128.6121, 35.8887, 50],
+    [128.6158, 35.8885, 100],
+  ],
 ];
 
 type UamProp = {
@@ -38,16 +45,16 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
       currentwayPoints.addSample(
         curTime,
         Cartesian3.fromDegrees(
-          samplePath1[count][0],
-          samplePath1[count][1],
-          samplePath1[count][2],
+          samplePath[id][count][0],
+          samplePath[id][count][1],
+          samplePath[id][count][2],
         ),
       );
 
       return currentwayPoints;
     });
 
-    setCount((prevCount) => (prevCount + 1) % 2);
+    setCount((prevCount) => (prevCount + 1) % samplePath[id].length);
   };
 
   useEffect(() => {
