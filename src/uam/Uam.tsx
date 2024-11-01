@@ -2,27 +2,19 @@ import { Cartesian3, Color, JulianDate, SampledPositionProperty } from 'cesium';
 import { useEffect, useRef, useState } from 'react';
 import { Entity } from 'resium';
 
-const samplePath: number[][][] = [
-  [
-    [128.6115, 35.8881, 10],
-    [128.612, 35.8904, 100],
-  ],
-  [
-    [128.6108, 35.8902, 50],
-    [128.6121, 35.8887, 50],
-    [128.6158, 35.8885, 100],
-  ],
-];
-
 type UamProp = {
   id: number;
 };
+
+function getRandomNumber(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
 
 const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
   const [wayPoints, setWaypoint] = useState<SampledPositionProperty>(
     new SampledPositionProperty(),
   );
-  const [count, setCount] = useState<number>(0);
+
   const uamColor = useRef<Color>(Color.fromRandom({ minimumAlpha: 1 }));
   const unitTime = 1; //api 요청 단위시간
 
@@ -45,16 +37,14 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
       currentwayPoints.addSample(
         curTime,
         Cartesian3.fromDegrees(
-          samplePath[id][count][0],
-          samplePath[id][count][1],
-          samplePath[id][count][2],
+          getRandomNumber(128.605, 128.6154),
+          getRandomNumber(35.8862, 35.8949),
+          getRandomNumber(10, 100),
         ),
       );
 
       return currentwayPoints;
     });
-
-    setCount((prevCount) => (prevCount + 1) % samplePath[id].length);
   };
 
   useEffect(() => {
@@ -67,7 +57,7 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
 
   return (
     <Entity
-      point={{ pixelSize: 10, color: uamColor.current.clone() }}
+      point={{ pixelSize: 20, color: uamColor.current.clone() }}
       position={wayPoints}
     />
   );
