@@ -39,7 +39,7 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
         Cartesian3.fromDegrees(
           getRandomNumber(128.605, 128.6154),
           getRandomNumber(35.8862, 35.8949),
-          getRandomNumber(10, 100),
+          getRandomNumber(100, 200),
         ),
       );
 

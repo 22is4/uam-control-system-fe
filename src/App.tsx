@@ -1,5 +1,5 @@
-import { Cartesian3, Ion, JulianDate } from 'cesium';
-import { Camera, CameraFlyTo, Clock, Viewer } from 'resium';
+import { Cartesian3, Ion, IonResource, JulianDate } from 'cesium';
+import { Camera, CameraFlyTo, Cesium3DTileset, Clock, Viewer } from 'resium';
 import styled from 'styled-components';
 import UamController from './uam/UamController';
 
@@ -37,6 +37,8 @@ export default function App() {
             duration={0}
           />
         </Camera>
+        <Cesium3DTileset url={IonResource.fromAssetId(2275207)} />
+        <Cesium3DTileset url={IonResource.fromAssetId(96188)} />
         <UamController />
       </UCSViewer>
     </>
