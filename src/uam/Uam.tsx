@@ -1,13 +1,12 @@
 import {
   Cartesian3,
-  Color,
   IonResource,
   JulianDate,
   Resource,
   SampledPositionProperty,
   VelocityOrientationProperty,
 } from 'cesium';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
 
 type UamProp = {
@@ -23,7 +22,6 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
     new SampledPositionProperty(),
   );
 
-  const uamColor = useRef<Color>(Color.fromRandom({ minimumAlpha: 1 }));
   const unitTime = 1; //api 요청 단위시간
 
   const addWaypoint = () => {
