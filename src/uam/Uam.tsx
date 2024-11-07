@@ -1,6 +1,14 @@
-import { Cartesian3, Color, JulianDate, SampledPositionProperty } from 'cesium';
+import {
+  Cartesian3,
+  Color,
+  IonResource,
+  JulianDate,
+  Resource,
+  SampledPositionProperty,
+  VelocityOrientationProperty,
+} from 'cesium';
 import { useEffect, useRef, useState } from 'react';
-import { Entity } from 'resium';
+import { Entity, ModelGraphics } from 'resium';
 
 type UamProp = {
   id: number;
@@ -55,11 +63,23 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
     return () => clearInterval(intervalId);
   });
 
+  const [modelUri, setModelUri] = useState<Resource | undefined>(undefined);
+
+  useEffect(() => {
+    const loadModelUri = async () => {
+      const uri = await IonResource.fromAssetId(2808773);
+      setModelUri(uri);
+    };
+    loadModelUri();
+  }, []);
+
   return (
     <Entity
-      point={{ pixelSize: 20, color: uamColor.current.clone() }}
       position={wayPoints}
-    />
+      orientation={new VelocityOrientationProperty(wayPoints)}
+    >
+      {modelUri && <ModelGraphics uri={modelUri} />}
+    </Entity>
   );
 };
 
