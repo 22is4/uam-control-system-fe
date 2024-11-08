@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import Uam from './Uam';
+import { useEffect } from 'react';
+import React from 'react';
+import Uam from './UamEntity';
+import { useUamInstanceStore } from './UamInstance';
 
 const UamController: React.FC = () => {
-  const [uamInstances, setInstance] = useState<number[]>([]);
+  const { uamInstances, setUamInstance } = useUamInstanceStore();
 
   useEffect(() => {
     //TODO: api code로 변경
     const intervalId = setInterval(() => {
-      setInstance([0, 1]);
+      setUamInstance([0, 2, 3]);
     }, 1000);
 
     return () => clearInterval(intervalId);

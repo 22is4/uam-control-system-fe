@@ -17,7 +17,7 @@ function getRandomNumber(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
+const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   const [wayPoints, setWaypoint] = useState<SampledPositionProperty>(
     new SampledPositionProperty(),
   );
@@ -76,9 +76,11 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
       position={wayPoints}
       orientation={new VelocityOrientationProperty(wayPoints)}
     >
-      {modelUri && <ModelGraphics uri={modelUri} />}
+      {modelUri && (
+        <ModelGraphics uri={modelUri} scale={5.0} /> // Adjust the scale value as needed
+      )}
     </Entity>
   );
 };
 
-export default Uam;
+export default UamEntity;
