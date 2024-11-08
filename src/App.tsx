@@ -1,46 +1,65 @@
-import { Cartesian3, Ion, IonResource, JulianDate } from 'cesium';
-import { Camera, CameraFlyTo, Cesium3DTileset, Clock, Viewer } from 'resium';
+import { useUamInstanceStore } from './uam/UamInstance';
+import UCSViewer from './UCSViewer';
 import styled from 'styled-components';
-import UamController from './uam/UamController';
 
-const UCSViewer = styled(Viewer)`
-  width: 100%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+const InfoPanel = styled.div`
+  position: relative;
+  width: 18.75rem;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+`;
+
+const InstanceCount = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
 `;
 
 export default function App() {
-  Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESSTOKEN;
-  const start = JulianDate.now();
+  const { uamInstances } = useUamInstanceStore();
 
   return (
-    <>
-      <UCSViewer
-        baseLayerPicker={false}
-        fullscreenButton={false}
-        geocoder={false}
-        homeButton={false}
-        infoBox={false}
-        sceneModePicker={false}
-        selectionIndicator={false}
-        timeline={false}
-        navigationHelpButton={false}
-        navigationInstructionsInitiallyVisible={false}
-        skyBox={false}
+    <div style={{ display: 'flex', height: '100rem' }}>
+      <UCSViewer />
+      <InfoPanel>
+        <div
+          style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            color: '#555',
+            textAlign: 'center',
+            marginBottom: '1rem',
+          }}
+        >
+          현재 비행중인 UAM 수
+        </div>
+        <InstanceCount>{uamInstances.length}</InstanceCount>
+      </InfoPanel>
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '1rem',
+          width: '100%',
+          textAlign: 'center',
+        }}
       >
-        <Clock startTime={start.clone()} shouldAnimate={true} />
-        <Camera>
-          <CameraFlyTo
-            destination={Cartesian3.fromDegrees(128.6111, 35.8885, 1000)}
-            duration={0}
-          />
-        </Camera>
-        <Cesium3DTileset url={IonResource.fromAssetId(2275207)} />
-        <Cesium3DTileset url={IonResource.fromAssetId(96188)} />
-        <UamController />
-      </UCSViewer>
-    </>
+        <div
+          style={{
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            color: '#555',
+            marginBottom: '1rem',
+          }}
+        ></div>
+        <InstanceCount>
+          {new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+          })}
+        </InstanceCount>
+      </div>
+    </div>
   );
 }
