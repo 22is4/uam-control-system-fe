@@ -8,6 +8,7 @@ import {
 } from 'cesium';
 import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
+import { UNIT_TIME } from './constants';
 
 type UamProp = {
   id: number;
@@ -22,15 +23,13 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
     new SampledPositionProperty(),
   );
 
-  const unitTime = 1; //api 요청 단위시간
-
   const addWaypoint = () => {
     setWaypoint((currentwayPoints) => {
       //TODO: sampledata 제거하고 api코드로 변경
 
       const curTime = JulianDate.addSeconds(
         JulianDate.now(),
-        unitTime * 2,
+        UNIT_TIME,
         new JulianDate(),
       );
       /* 
@@ -56,7 +55,7 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       addWaypoint();
-    }, unitTime * 1000);
+    }, UNIT_TIME * 1000);
 
     return () => clearInterval(intervalId);
   });
@@ -73,6 +72,7 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
 
   return (
     <Entity
+      id={`uam-${id}`}
       position={wayPoints}
       orientation={new VelocityOrientationProperty(wayPoints)}
     >

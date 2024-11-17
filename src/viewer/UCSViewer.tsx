@@ -1,15 +1,24 @@
 import { JulianDate, Ion, IonResource, Cartesian3 } from 'cesium';
 import { CameraFlyTo, Cesium3DTileset, Clock, Viewer } from 'resium';
-import UamController from './uam/UamController';
+import UamController from '../uam/UamController';
 import styled from 'styled-components';
+import PathController from '../path/PathController';
+import { useViewer } from './useViewer';
 
 const Overlay = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  height: 20vh;
   width: 100%;
-  height: 20%;
-  background-color: #f0f0f0;
+  background-color: #1e1e1e;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+`;
+
+const CustomViewer = styled(Viewer)`
+  height: 80vh;
+  width: 100%;
 `;
 
 export default function UCSViewer() {
@@ -17,22 +26,26 @@ export default function UCSViewer() {
   const start = JulianDate.now();
   const homePosition = Cartesian3.fromDegrees(128.6014, 35.8714, 15000);
 
+  const { viewerRef } = useViewer();
+
   return (
-    <>
-      <Viewer
+    <Container>
+      <CustomViewer
+        animation={false}
+        shouldAnimate={true}
         baseLayerPicker={false}
         fullscreenButton={false}
         geocoder={false}
         infoBox={false}
         sceneModePicker={false}
-        selectionIndicator={false}
         timeline={false}
         navigationHelpButton={false}
         navigationInstructionsInitiallyVisible={false}
         skyBox={false}
         homeButton={true}
+        style={{ flex: 1 }}
         ref={(viewer) => {
-          if (viewer) {
+          if (viewer && viewer.cesiumElement) {
             viewer.cesiumElement?.homeButton.viewModel.command.afterExecute.addEventListener(
               () => {
                 viewer.cesiumElement?.camera.flyTo({
@@ -41,6 +54,8 @@ export default function UCSViewer() {
                 });
               },
             );
+
+            viewerRef.current = viewer.cesiumElement;
           }
         }}
       >
@@ -49,8 +64,9 @@ export default function UCSViewer() {
         <Cesium3DTileset url={IonResource.fromAssetId(2275207)} />
         <Cesium3DTileset url={IonResource.fromAssetId(96188)} />
         <UamController />
-      </Viewer>
+        <PathController />
+      </CustomViewer>
       <Overlay />
-    </>
+    </Container>
   );
 }
