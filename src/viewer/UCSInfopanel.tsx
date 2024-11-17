@@ -19,11 +19,17 @@ const InstanceList = styled.ul`
   margin: 0;
 `;
 
-const InstanceItem = styled.li<{ isSelected: boolean }>`
+interface InstanceItemProps
+  extends Omit<React.HTMLAttributes<HTMLLIElement>, '$isSelected'> {
+  $isSelected: boolean;
+}
+
+const InstanceItem = styled.li<InstanceItemProps>`
   padding: 0.5rem 1rem;
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? '#555' : 'transparent')};
-  color: ${(props) => (props.isSelected ? '#fff' : '#ccc')};
+  background-color: ${({ $isSelected }) =>
+    $isSelected ? '#555' : 'transparent'};
+  color: ${({ $isSelected }) => ($isSelected ? '#fff' : '#ccc')};
   &:hover {
     background-color: #333;
   }
@@ -136,7 +142,7 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
             <InstanceItem
               key={`info-${uamId}`}
               onClick={() => handleClick(uamId)}
-              isSelected={uamId === selectedUamId}
+              $isSelected={uamId === selectedUamId}
             >
               <div>UAM ID: {uamId}</div>
               {uamPosition ? (
