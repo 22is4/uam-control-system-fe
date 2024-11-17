@@ -1,10 +1,8 @@
-
 import { useUamInstanceStore } from './uam/uamInstance';
 import UCSViewer from './viewer/UCSViewer';
 import styled from 'styled-components';
 import { ViewerProvider } from './viewer/ViewerContext';
 import UCSInfoPanel from './viewer/UCSInfopanel';
-
 
 const AppContainer = styled.div`
   display: flex;
