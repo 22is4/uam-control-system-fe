@@ -1,30 +1,27 @@
-import { Cartesian3, Color, JulianDate, SampledPositionProperty } from 'cesium';
-import { useEffect, useRef, useState } from 'react';
-import { Entity } from 'resium';
-
-const samplePath: number[][][] = [
-  [
-    [128.6115, 35.8881, 10],
-    [128.612, 35.8904, 100],
-  ],
-  [
-    [128.6108, 35.8902, 50],
-    [128.6121, 35.8887, 50],
-    [128.6158, 35.8885, 100],
-  ],
-];
+import {
+  Cartesian3,
+  IonResource,
+  JulianDate,
+  Resource,
+  SampledPositionProperty,
+  VelocityOrientationProperty,
+} from 'cesium';
+import { useEffect, useState } from 'react';
+import { Entity, ModelGraphics } from 'resium';
+import { UNIT_TIME } from './constants';
 
 type UamProp = {
   id: number;
 };
 
-const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
+function getRandomNumber(min: number, max: number) {
+  return Math.random() * (max - min) + min;
+}
+
+const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   const [wayPoints, setWaypoint] = useState<SampledPositionProperty>(
     new SampledPositionProperty(),
   );
-  const [count, setCount] = useState<number>(0);
-  const uamColor = useRef<Color>(Color.fromRandom({ minimumAlpha: 1 }));
-  const unitTime = 1; //api 요청 단위시간
 
   const addWaypoint = () => {
     setWaypoint((currentwayPoints) => {
@@ -32,7 +29,7 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
 
       const curTime = JulianDate.addSeconds(
         JulianDate.now(),
-        unitTime * 2,
+        UNIT_TIME,
         new JulianDate(),
       );
       /* 
@@ -45,32 +42,45 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
       currentwayPoints.addSample(
         curTime,
         Cartesian3.fromDegrees(
-          samplePath[id][count][0],
-          samplePath[id][count][1],
-          samplePath[id][count][2],
+          getRandomNumber(128.605, 128.6154),
+          getRandomNumber(35.8862, 35.8949),
+          getRandomNumber(100, 200),
         ),
       );
 
       return currentwayPoints;
     });
-
-    setCount((prevCount) => (prevCount + 1) % samplePath[id].length);
   };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       addWaypoint();
-    }, unitTime * 1000);
+    }, UNIT_TIME * 1000);
 
     return () => clearInterval(intervalId);
   });
 
+  const [modelUri, setModelUri] = useState<Resource | undefined>(undefined);
+
+  useEffect(() => {
+    const loadModelUri = async () => {
+      const uri = await IonResource.fromAssetId(2808773);
+      setModelUri(uri);
+    };
+    loadModelUri();
+  }, []);
+
   return (
     <Entity
-      point={{ pixelSize: 10, color: uamColor.current.clone() }}
+      id={`uam-${id}`}
       position={wayPoints}
-    />
+      orientation={new VelocityOrientationProperty(wayPoints)}
+    >
+      {modelUri && (
+        <ModelGraphics uri={modelUri} scale={5.0} /> // Adjust the scale value as needed
+      )}
+    </Entity>
   );
 };
 
-export default Uam;
+export default UamEntity;
