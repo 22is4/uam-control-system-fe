@@ -8,6 +8,7 @@ import {
 } from 'cesium';
 import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
+import { UNIT_TIME } from './constants';
 
 type UamProp = {
   id: number;
@@ -17,12 +18,10 @@ function getRandomNumber(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
+const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   const [wayPoints, setWaypoint] = useState<SampledPositionProperty>(
     new SampledPositionProperty(),
   );
-
-  const unitTime = 1; //api 요청 단위시간
 
   const addWaypoint = () => {
     setWaypoint((currentwayPoints) => {
@@ -30,7 +29,7 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
 
       const curTime = JulianDate.addSeconds(
         JulianDate.now(),
-        unitTime * 2,
+        UNIT_TIME,
         new JulianDate(),
       );
       /* 
@@ -56,7 +55,7 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       addWaypoint();
-    }, unitTime * 1000);
+    }, UNIT_TIME * 1000);
 
     return () => clearInterval(intervalId);
   });
@@ -73,12 +72,15 @@ const Uam: React.FC<UamProp> = ({ id }: UamProp) => {
 
   return (
     <Entity
+      id={`uam-${id}`}
       position={wayPoints}
       orientation={new VelocityOrientationProperty(wayPoints)}
     >
-      {modelUri && <ModelGraphics uri={modelUri} />}
+      {modelUri && (
+        <ModelGraphics uri={modelUri} scale={5.0} /> // Adjust the scale value as needed
+      )}
     </Entity>
   );
 };
 
-export default Uam;
+export default UamEntity;
