@@ -2,7 +2,7 @@ import { useUamInstanceStore } from './uam/uamInstance';
 import UCSViewer from './viewer/UCSViewer';
 import styled from 'styled-components';
 import { ViewerProvider } from './viewer/ViewerContext';
-import UamInfoPanel from './viewer/Infopanel';
+import UCSInfoPanel from './viewer/UCSInfopanel';
 
 const AppContainer = styled.div`
   display: flex;
@@ -16,7 +16,7 @@ export default function App() {
     <ViewerProvider>
       <AppContainer>
         <UCSViewer />
-        <UamInfoPanel uamInstances={uamInstances} />
+        <UCSInfoPanel uamInstances={uamInstances} />
       </AppContainer>
     </ViewerProvider>
   );
