@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import React from 'react';
 import Uam from './UamEntity';
-import { useUamInstanceStore } from './UamInstance';
+import { useUamInstanceStore } from './uamInstance';
+import { UNIT_TIME } from './constants';
 
 const UamController: React.FC = () => {
   const { uamInstances, setUamInstance } = useUamInstanceStore();
@@ -9,8 +9,8 @@ const UamController: React.FC = () => {
   useEffect(() => {
     //TODO: api code로 변경
     const intervalId = setInterval(() => {
-      setUamInstance([0, 2, 3]);
-    }, 1000);
+      setUamInstance([0, 1, 2, 4]);
+    }, 1000 * UNIT_TIME);
 
     return () => clearInterval(intervalId);
   });
@@ -18,7 +18,7 @@ const UamController: React.FC = () => {
   return (
     <>
       {uamInstances.map((instanceNumber) => {
-        return <Uam key={instanceNumber} id={instanceNumber} />;
+        return <Uam key={`uam-${instanceNumber}`} id={instanceNumber} />;
       })}
     </>
   );
