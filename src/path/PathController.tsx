@@ -21,6 +21,7 @@ const PathController: React.FC = () => {
       {pathsWithStyles.map((path, index) => (
         <PathEntity
           key={index}
+          id={index}
           positions={path.positions}
           color={path.color}
           radius={path.radius}
