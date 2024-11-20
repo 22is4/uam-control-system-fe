@@ -5,19 +5,13 @@ import styled from 'styled-components';
 import PathController from '../path/PathController';
 import { useViewer } from './useViewer';
 
-const Overlay = styled.div`
-  height: 20vh;
-  width: 100%;
-  background-color: #1e1e1e;
-`;
-
 const Container = styled.div`
   width: 100%;
   height: 100vh;
 `;
 
 const CustomViewer = styled(Viewer)`
-  height: 80vh;
+  height: 100vh;
   width: 100%;
 `;
 
@@ -66,7 +60,6 @@ export default function UCSViewer() {
         <UamController />
         <PathController />
       </CustomViewer>
-      <Overlay />
     </Container>
   );
 }

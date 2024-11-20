@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useViewer } from './useViewer';
 import { Cartographic, Math as CesiumMath } from 'cesium';
+import { getBuildingName } from './geocodeToBuilding';
 
 const InfoPanel = styled.div`
-  width: 18.75rem;
+  width: 21rem;
   background-color: #1e1e1e;
   font-family: Arial, sans-serif;
   color: #fff;
@@ -39,16 +40,17 @@ type UamInfoPanelProps = {
   uamInstances: number[];
 };
 
-type UamPosition = {
+type UamData = {
   id: number;
   latitude: number;
   longitude: number;
   altitude: number;
+  buildingName?: string;
 };
 
 const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
   const { viewerRef } = useViewer();
-  const [uamPositions, setUamPositions] = useState<UamPosition[]>([]);
+  const [uamData, setUamData] = useState<UamData[]>([]);
   const [selectedUamId, setSelectedUamId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -56,10 +58,10 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
 
     const viewer = viewerRef.current;
 
-    const updatePositions = () => {
-      const newPositions: UamPosition[] = [];
+    const fetchData = async () => {
+      const newData: UamData[] = [];
 
-      uamInstances.forEach((uamId) => {
+      for (const uamId of uamInstances) {
         const entity = viewer.entities.getById(`uam-${uamId}`);
 
         if (entity && entity.position) {
@@ -72,38 +74,26 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
             const longitude = CesiumMath.toDegrees(cartographic.longitude);
             const altitude = cartographic.height;
 
-            newPositions.push({
+            const buildingName = await getBuildingName(latitude, longitude);
+
+            newData.push({
               id: uamId,
               latitude,
               longitude,
               altitude,
+              buildingName,
             });
           }
         }
-      });
+      }
 
-      setUamPositions(newPositions);
+      setUamData(newData);
     };
 
-    updatePositions();
-
-    viewer.clock.onTick.addEventListener(updatePositions);
-
-    const selectedEntityChangeHandler = (id: number) => {
-      setSelectedUamId(id);
-    };
-
-    viewer.selectedEntityChanged.addEventListener(selectedEntityChangeHandler);
-
-    return () => {
-      viewer.clock.onTick.removeEventListener(updatePositions);
-      viewer.selectedEntityChanged.removeEventListener(
-        selectedEntityChangeHandler,
-      );
-    };
+    fetchData(); // uamInstances 변경 시 즉시 호출
   }, [uamInstances, viewerRef]);
 
-  const handleClick = (uamId: number) => {
+  const handleUamClick = (uamId: number) => {
     if (viewerRef.current) {
       const entity = viewerRef.current.entities.getById(`uam-${uamId}`);
 
@@ -115,8 +105,6 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
           viewerRef.current.selectedEntity = entity;
           setSelectedUamId(uamId);
         }
-      } else {
-        console.warn(`Entity with id ${uamId} not found.`);
       }
     }
   };
@@ -136,22 +124,21 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
       </div>
       <InstanceList>
         {uamInstances.map((uamId) => {
-          const uamPosition = uamPositions.find((pos) => pos.id === uamId);
+          const uam = uamData.find((data) => data.id === uamId);
 
           return (
             <InstanceItem
               key={`info-${uamId}`}
-              onClick={() => handleClick(uamId)}
+              onClick={() => handleUamClick(uamId)}
               $isSelected={uamId === selectedUamId}
             >
               <div>UAM ID: {uamId}</div>
-              {uamPosition ? (
+              {uam ? (
                 <>
                   <div>
-                    위도: {uamPosition.latitude.toFixed(3)}, 경도:{' '}
-                    {uamPosition.longitude.toFixed(3)}
+                    위치: {uam.buildingName || '위치 정보를 불러오는 중...'}
                   </div>
-                  <div>고도: {uamPosition.altitude.toFixed(1)} m</div>
+                  <div>고도: {uam.altitude.toFixed(1)} m</div>
                 </>
               ) : (
                 <div>위치 정보를 불러오는 중...</div>
