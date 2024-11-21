@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { useMemo } from 'react';
 import PathEntity from './PathEntity';
-import { pathCoordinates, Path } from './pathCoordinates';
+import { pathCoordinates } from './pathCoordinates';
 import { Color } from 'cesium';
 
 const getRandomColor = () => {
@@ -8,13 +8,14 @@ const getRandomColor = () => {
 };
 
 const PathController: React.FC = () => {
-  const [pathsWithStyles] = useState<Path[]>(() =>
-    pathCoordinates.map((path) => ({
+  // useMemo를 사용하여 pathCoordinates에 스타일 적용
+  const pathsWithStyles = useMemo(() => {
+    return pathCoordinates.map((path) => ({
       ...path,
       color: getRandomColor(),
       radius: 50, // 반지름을 50미터로 설정
-    })),
-  );
+    }));
+  }, []); // pathCoordinates가 변경되지 않는다고 가정
 
   return (
     <>
