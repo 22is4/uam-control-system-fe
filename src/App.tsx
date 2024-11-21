@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ViewerProvider } from './viewer/ViewerContext';
 import UCSInfoPanel from './viewer/UCSInfopanel';
 import PathInfoPanel from './viewer/PathInfoPanel';
+import { pathCoordinates } from './path/pathCoordinates';
 
 const AppContainer = styled.div`
   display: flex;
@@ -37,7 +38,7 @@ export default function App() {
 
         {/* PathInfoPanel */}
         <PathInfoContainer>
-          <PathInfoPanel pathCount={2} />
+          <PathInfoPanel pathCount={pathCoordinates.length} />
         </PathInfoContainer>
       </AppContainer>
     </ViewerProvider>
