@@ -59,7 +59,7 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
 
   useEffect(() => {
     const loadModelUri = async () => {
-      const uri = await IonResource.fromAssetId(2808773);
+      const uri = await IonResource.fromAssetId(2852225);
       setModelUri(uri);
     };
     loadModelUri();
@@ -67,7 +67,7 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
 
   return (
     <Entity id={`uam-${id}`} position={wayPoints}>
-      {modelUri && <ModelGraphics uri={modelUri} scale={100.0} />}
+      {modelUri && <ModelGraphics uri={modelUri} scale={10.0} />}
     </Entity>
   );
 };

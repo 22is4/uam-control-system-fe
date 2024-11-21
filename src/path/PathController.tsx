@@ -13,7 +13,7 @@ const PathController: React.FC = () => {
     return pathCoordinates.map((path) => ({
       ...path,
       color: getRandomColor(),
-      radius: 50, // 반지름을 50미터로 설정
+      radius: 20, // 반지름을 50미터로 설정
     }));
   }, []); // pathCoordinates가 변경되지 않는다고 가정
 
