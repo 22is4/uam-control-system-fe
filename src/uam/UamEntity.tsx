@@ -9,47 +9,43 @@ import {
 import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
 import { UNIT_TIME } from './constants';
+import axios from 'axios';
 
 type UamProp = {
   id: number;
 };
-
-function getRandomNumber(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
 
 const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   const [wayPoints, setWaypoint] = useState<SampledPositionProperty>(
     new SampledPositionProperty(),
   );
 
-  const addWaypoint = () => {
-    setWaypoint((currentwayPoints) => {
-      //TODO: sampledata 제거하고 api코드로 변경
-
-      const curTime = JulianDate.addSeconds(
-        JulianDate.now(),
-        UNIT_TIME,
-        new JulianDate(),
+  const addWaypoint = async () => {
+    try {
+      // 서버에 데이터 요청
+      const response = await axios.get(
+        `http://cocoquiet.com:10001/uam/drone/instances/${id}`,
       );
-      /* 
-        cesium Enity의 렌더링 시간 때문인지 바로 다음 단위 시간 후에 갈 곳을 현재 시점에서 바로 정할 수 없다. 만약 그렇게 한다면 Entity 렌더링이 제대로 되지 않는다.
-        바로 다음 단위 시간 후에 갈 곳은 바로 이전 단위 시간에 입력을 받아야 한다.
-        예를 들어 api를 요청하는 단위 시간이 1초라면, uam이 현재 시점에서 1초 후에 갈 곳은 현재시점에서 1초 이전에 정해져있어야 한다.
-        결론적으로 cesium과 시뮬레이터의 시차는 단위시간의 두 배만큼 발생한다.
-      */
+      const { latitude, longitude, altitude } = response.data;
 
-      currentwayPoints.addSample(
-        curTime,
-        Cartesian3.fromDegrees(
-          getRandomNumber(128.4526, 128.6985),
-          getRandomNumber(35.8289, 35.9911),
-          getRandomNumber(400, 500),
-        ),
-      );
+      setWaypoint((currentwayPoints) => {
+        const curTime = JulianDate.addSeconds(
+          JulianDate.now(),
+          UNIT_TIME,
+          new JulianDate(),
+        );
 
-      return currentwayPoints;
-    });
+        // 새로운 위치 추가
+        currentwayPoints.addSample(
+          curTime,
+          Cartesian3.fromDegrees(longitude, latitude, altitude),
+        );
+
+        return currentwayPoints;
+      });
+    } catch (error) {
+      console.error(`Failed to fetch waypoint for UAM ID ${id}:`, error);
+    }
   };
 
   useEffect(() => {
