@@ -4,7 +4,6 @@ import {
   JulianDate,
   Resource,
   SampledPositionProperty,
-  VelocityOrientationProperty,
 } from 'cesium';
 import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
@@ -67,14 +66,8 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
   }, []);
 
   return (
-    <Entity
-      id={`uam-${id}`}
-      position={wayPoints}
-      orientation={new VelocityOrientationProperty(wayPoints)}
-    >
-      {modelUri && (
-        <ModelGraphics uri={modelUri} scale={20.0} /> // Adjust the scale value as needed
-      )}
+    <Entity id={`uam-${id}`} position={wayPoints}>
+      {modelUri && <ModelGraphics uri={modelUri} scale={100.0} />}
     </Entity>
   );
 };
