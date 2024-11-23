@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useUamInstanceStore } from './uam/uamInstance';
+import UCSViewer from './viewer/UCSViewer';
+import styled from 'styled-components';
+import { ViewerProvider } from './viewer/ViewerContext';
+import UCSInfoPanel from './viewer/UCSInfopanel';
+import PathInfoPanel from './viewer/PathInfoPanel';
+import { pathCoordinates } from './path/pathCoordinates';
 
-function App() {
-  const [count, setCount] = useState(0)
+const AppContainer = styled.div`
+  display: flex;
+  flex-direction: column; /* 세로로 배치 */
+  height: 100vh;
+`;
+
+const ViewerSection = styled.div`
+  display: flex;
+  flex: 1; /* 화면의 나머지 공간 차지 */
+  overflow: hidden; /* 필요 시 넘치는 내용 숨김 */
+`;
+
+const PathInfoContainer = styled.div`
+  height: 20vh; /* 하단에 고정된 높이 */
+  width: 100%; /* 가로 전체 */
+  background-color: #1e1e1e;
+`;
+
+export default function App() {
+  const { uamInstances } = useUamInstanceStore();
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <ViewerProvider>
+      <AppContainer>
+        {/* Viewer와 InfoPanel */}
+        <ViewerSection>
+          <UCSViewer />
+          <UCSInfoPanel uamInstances={uamInstances} />
+        </ViewerSection>
 
-export default App
+        {/* PathInfoPanel */}
+        <PathInfoContainer>
+          <PathInfoPanel pathCount={pathCoordinates.length} />
+        </PathInfoContainer>
+      </AppContainer>
+    </ViewerProvider>
+  );
+}
