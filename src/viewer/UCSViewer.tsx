@@ -56,7 +56,6 @@ export default function UCSViewer() {
         <Clock startTime={start.clone()} shouldAnimate={true} />
         <CameraFlyTo destination={homePosition} duration={0} once />
         <Cesium3DTileset url={IonResource.fromAssetId(2275207)} />
-        <Cesium3DTileset url={IonResource.fromAssetId(96188)} />
         <UamController />
         <PathController />
       </CustomViewer>

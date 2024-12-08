@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useUamInstanceStore } from './uam/uamInstance';
 import UCSViewer from './viewer/UCSViewer';
 import styled from 'styled-components';
@@ -6,41 +7,82 @@ import UCSInfoPanel from './viewer/UCSInfopanel';
 import PathInfoPanel from './viewer/PathInfoPanel';
 import { pathCoordinates } from './path/pathCoordinates';
 
-const AppContainer = styled.div`
-  display: flex;
-  flex-direction: column; /* 세로로 배치 */
-  height: 100vh;
-`;
-
 const ViewerSection = styled.div`
   display: flex;
   flex: 1; /* 화면의 나머지 공간 차지 */
   overflow: hidden; /* 필요 시 넘치는 내용 숨김 */
 `;
 
-const PathInfoContainer = styled.div`
-  height: 20vh; /* 하단에 고정된 높이 */
-  width: 100%; /* 가로 전체 */
-  background-color: #1e1e1e;
+const MenuSection = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const InfoPanelSection = styled.div`
+  display: flex;
+  flex: 1;
+`;
+
+const ButtonSection = styled.div`
+  display: flex;
+  height: 3rem;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+`;
+
+interface StyledButtonProps
+  extends Omit<React.HTMLAttributes<HTMLLIElement>, '$active'> {
+  $active: boolean;
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
+  display: flex;
+  flex: 1; /* 버튼이 섹션 전체를 고르게 차지 */
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1.25rem 1.25rem 0rem 0rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.5);
+  background-color: ${(props) =>
+    props.$active ? '#1e1e1e' : 'black'}; /* 활성 상태에 따른 색상 변경 */
+  color: white; /* 텍스트 색상 변경 */
 `;
 
 export default function App() {
   const { uamInstances } = useUamInstanceStore();
+  const [activePanel, setActivePanel] = useState('UCS'); // UCS 또는 Path
 
   return (
     <ViewerProvider>
-      <AppContainer>
-        {/* Viewer와 InfoPanel */}
-        <ViewerSection>
-          <UCSViewer />
-          <UCSInfoPanel uamInstances={uamInstances} />
-        </ViewerSection>
-
-        {/* PathInfoPanel */}
-        <PathInfoContainer>
-          <PathInfoPanel pathCount={pathCoordinates.length} />
-        </PathInfoContainer>
-      </AppContainer>
+      {/* Viewer와 InfoPanel */}
+      <ViewerSection>
+        <UCSViewer />
+        <MenuSection>
+          <ButtonSection>
+            <StyledButton
+              $active={activePanel === 'UCS'}
+              onClick={() => setActivePanel('UCS')}
+            >
+              UAM 정보
+            </StyledButton>
+            <StyledButton
+              $active={activePanel === 'Path'}
+              onClick={() => setActivePanel('Path')}
+            >
+              경로
+            </StyledButton>
+          </ButtonSection>
+          <InfoPanelSection>
+            {activePanel === 'UCS' && (
+              <UCSInfoPanel uamInstances={uamInstances} />
+            )}
+            {activePanel === 'Path' && (
+              <PathInfoPanel pathCount={pathCoordinates.length} />
+            )}
+          </InfoPanelSection>
+        </MenuSection>
+      </ViewerSection>
     </ViewerProvider>
   );
 }
