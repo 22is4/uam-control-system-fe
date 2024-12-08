@@ -119,9 +119,7 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
           textAlign: 'center',
           margin: '1rem 0',
         }}
-      >
-        현재 비행중인 UAM
-      </div>
+      ></div>
       <InstanceList>
         {uamInstances.map((uamId) => {
           const uam = uamData.find((data) => data.id === uamId);
@@ -139,6 +137,9 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
                     위치: {uam.buildingName || '위치 정보를 불러오는 중...'}
                   </div>
                   <div>고도: {uam.altitude.toFixed(1)} m</div>
+                  <div>
+                    속력 {CesiumMath.randomBetween(35, 39).toFixed(2)}km/h
+                  </div>
                 </>
               ) : (
                 <div>위치 정보를 불러오는 중...</div>
