@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 
 const InfoPanel = styled.div`
-  width: 100%; /* 가로 전체 */
+  width: 21rem; /* 가로 전체 */
   background-color: #1e1e1e;
   font-family: Arial, sans-serif;
   color: #fff;
@@ -15,8 +15,6 @@ const InfoPanel = styled.div`
 const PathList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: 1rem 0 0 0;
-  border-top: 1px solid #333;
 `;
 
 const PathItem = styled.li<{ $isSelected: boolean }>`
@@ -80,9 +78,7 @@ const PathInfoPanel: React.FC<PathInfoPanelProps> = ({ pathCount }) => {
           textAlign: 'center',
           margin: '1rem 0',
         }}
-      >
-        경로 목록
-      </div>
+      ></div>
       <PathList>
         {Array.from({ length: pathCount }, (_, i) => (
           <PathItem
@@ -90,7 +86,7 @@ const PathInfoPanel: React.FC<PathInfoPanelProps> = ({ pathCount }) => {
             onClick={() => handlePathClick(i)}
             $isSelected={visiblePaths.includes(i)}
           >
-            {i} 번 노선
+            Route {i + 1}
           </PathItem>
         ))}
       </PathList>

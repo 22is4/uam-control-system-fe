@@ -119,9 +119,7 @@ const UCSInfoPanel: React.FC<UamInfoPanelProps> = ({ uamInstances }) => {
           textAlign: 'center',
           margin: '1rem 0',
         }}
-      >
-        현재 비행중인 UAM
-      </div>
+      ></div>
       <InstanceList>
         {uamInstances.map((uamId) => {
           const uam = uamData.find((data) => data.id === uamId);
