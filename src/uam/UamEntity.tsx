@@ -4,6 +4,7 @@ import {
   JulianDate,
   Resource,
   SampledPositionProperty,
+  VelocityOrientationProperty,
 } from 'cesium';
 import { useEffect, useState } from 'react';
 import { Entity, ModelGraphics } from 'resium';
@@ -59,15 +60,19 @@ const UamEntity: React.FC<UamProp> = ({ id }: UamProp) => {
 
   useEffect(() => {
     const loadModelUri = async () => {
-      const uri = await IonResource.fromAssetId(2852225);
+      const uri = await IonResource.fromAssetId(2808773);
       setModelUri(uri);
     };
     loadModelUri();
   }, []);
 
   return (
-    <Entity id={`uam-${id}`} position={wayPoints}>
-      {modelUri && <ModelGraphics uri={modelUri} scale={10.0} />}
+    <Entity
+      id={`uam-${id}`}
+      position={wayPoints}
+      orientation={new VelocityOrientationProperty(wayPoints)}
+    >
+      {modelUri && <ModelGraphics uri={modelUri} scale={8.0} />}
     </Entity>
   );
 };

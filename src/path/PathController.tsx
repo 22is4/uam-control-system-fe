@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import PathEntity from './PathEntity';
 import { pathCoordinates } from './pathCoordinates';
 import { Color } from 'cesium';
