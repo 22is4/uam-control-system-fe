@@ -20,6 +20,7 @@ const PathList = styled.ul`
 const PathItem = styled.li<{ $isSelected: boolean }>`
   padding: 0.5rem 1rem;
   cursor: pointer;
+  border: white;
   background-color: ${({ $isSelected }) =>
     $isSelected ? '#555' : 'transparent'};
   color: ${({ $isSelected }) => ($isSelected ? '#fff' : '#ccc')};
@@ -80,6 +81,16 @@ const PathInfoPanel: React.FC<PathInfoPanelProps> = ({ pathCount }) => {
         }}
       ></div>
       <PathList>
+        <PathItem
+          onClick={() => {
+            for (let index = 0; index < pathCount; index++) {
+              handlePathClick(index);
+            }
+          }}
+          $isSelected={false}
+        >
+          Route 전체 조회
+        </PathItem>
         {Array.from({ length: pathCount }, (_, i) => (
           <PathItem
             key={`path-${i}`}
